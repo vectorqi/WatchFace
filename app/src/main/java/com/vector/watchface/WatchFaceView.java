@@ -4,11 +4,8 @@ import android.content.Context;
 import android.graphics.*;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.util.Log;
 import android.view.View;
 
 import androidx.core.content.ContextCompat;
@@ -16,7 +13,6 @@ import androidx.core.content.ContextCompat;
 import java.util.Calendar;
 
 public class WatchFaceView extends View {
-    private static final String TAG = "WatchFaceView";
     // 原图
     private Bitmap backgroundBlack, backgroundBlue;
     private Bitmap hourHand, minuteHand;
@@ -26,7 +22,7 @@ public class WatchFaceView extends View {
     private Bitmap scaledHourHand, scaledMinuteHand;
     // 画笔
     private Paint progressPaint;
-
+    private float currentScale = 1f; // 默认值为1f
     // 是否翻转颜色：false -> 黑底蓝环, true -> 蓝底黑环
     private boolean invertColors = false;
 
@@ -88,12 +84,8 @@ public class WatchFaceView extends View {
         // 1) 先让系统测量一次
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        // 2) 得到系统测量后的宽度 & 高度
+        // 2) 得到系统测量后的宽度
         int measuredWidth = getMeasuredWidth();
-        int measuredHeight = getMeasuredHeight();
-
-        // 如果你的需求是“只看宽度”，
-        // 那么强制让高度也等于 measuredWidth，形成正圆
         setMeasuredDimension(measuredWidth, measuredWidth);
     }
 
@@ -107,7 +99,7 @@ public class WatchFaceView extends View {
                 (float) w / backgroundBlack.getWidth(),
                 (float) h / backgroundBlack.getHeight()
         );
-
+        currentScale = scale;
         // 2) 用同一个 scale 缩放 black / blue 背景
         scaledBlack = scaleBitmap(backgroundBlack, scale);
         scaledBlue = scaleBitmap(backgroundBlue, scale);
@@ -119,15 +111,13 @@ public class WatchFaceView extends View {
         // 4) 计算秒环区域
         //    因为表盘已经缩放成 scaledBlack，故表盘半径 = scaledBlack.getWidth() / 2
         int dialRadius = scaledBlack.getWidth() / 2;
-
-        int progressOffset = dpToPx(getContext(), 35);
-        float strokeHalf = progressPaint.getStrokeWidth() / 2f;
+        int progressOffset = dpToPx(getContext(), 30);
 
         progressRect = new RectF(
-                w / 2f - dialRadius + progressOffset + strokeHalf,
-                h / 2f - dialRadius + progressOffset + strokeHalf,
-                w / 2f + dialRadius - progressOffset - strokeHalf,
-                h / 2f + dialRadius - progressOffset - strokeHalf
+                w / 2f - dialRadius + progressOffset,
+                h / 2f - dialRadius + progressOffset,
+                w / 2f + dialRadius - progressOffset,
+                h / 2f + dialRadius - progressOffset
         );
     }
 
@@ -165,8 +155,10 @@ public class WatchFaceView extends View {
 
         // 3) 绘制时针、分针，注意 pivotOffset 用“缩放后指针”的高度
         if (scaledHourHand != null && scaledMinuteHand != null) {
-            int hourPivotOffset = scaledHourHand.getHeight() - dpToPx(getContext(), 7);
-            int minutePivotOffset = scaledMinuteHand.getHeight() - dpToPx(getContext(), 7);
+            // 原图底到 pivot 是 7px
+            float offsetInScaledPx = dpToPx(getContext(), 7)*currentScale;
+            float hourPivotOffset = (scaledHourHand.getHeight() - offsetInScaledPx);
+            float minutePivotOffset = (scaledMinuteHand.getHeight() - offsetInScaledPx);
 
             // 时针
             canvas.save();
@@ -199,8 +191,6 @@ public class WatchFaceView extends View {
         );
         float sweepAngle = (second / 60f) * 360f;
         canvas.drawArc(progressRect, -90f, sweepAngle, false, progressPaint);
-//        float sweepAngle = (second / 60f) * 360f - 2f; // 2f是你的偏移
-//        canvas.drawArc(progressRect, -90f + 2f, sweepAngle, false, progressPaint);
     }
 
     /**
