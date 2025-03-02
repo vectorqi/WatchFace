@@ -7,7 +7,7 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import java.util.Calendar;
@@ -127,7 +127,7 @@ public class WatchFaceView extends View {
      * 只要画面只在固定方向 (如 portrait) 使用即可。
      */
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
         int centerX = getWidth() / 2;
