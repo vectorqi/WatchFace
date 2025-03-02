@@ -4,12 +4,12 @@ A customizable analog watch face with dynamic color switching.
 ---
 
 ## 🔥 Features
-- 🕒 **Analog Watch Face** with hour, minute, and second hands
-- 🎨 **Dynamic Color Switching**: Switches between black & blue backgrounds every minute
-- ⏳ **Smooth Second Ring Animation** with anti-aliasing
-- 📏 **Auto-Scaling UI**: Watch face adapts to the screen size dynamically
-- ⚡ **Optimized Performance** with floating-point precision for accurate rendering
-- 🚀 **GPU-Accelerated Canvas Drawing**
+- **Analog Watch Face** with hour, minute, and second hands
+- **Dynamic Color Switching**: Switches between black & blue backgrounds every minute
+- **Smooth Second Ring Animation** with anti-aliasing
+- **Auto-Scaling UI**: Watch face adapts to the screen size dynamically
+- **Optimized Performance** with floating-point precision for accurate rendering
+- **GPU-Accelerated Canvas Drawing**
 
 ---
 
