@@ -86,7 +86,8 @@ public class WatchFaceView extends View {
 
         // 2) 得到系统测量后的宽度
         int measuredWidth = getMeasuredWidth();
-        setMeasuredDimension(measuredWidth, measuredWidth);
+        int measuredHeight = getMeasuredHeight();
+        setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
     @Override
